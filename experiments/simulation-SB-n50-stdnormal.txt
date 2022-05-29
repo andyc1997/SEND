@@ -1,0 +1,5 @@
+Sim sample:  50 || Bootstrap sample:  10000 || Repeat:  300 || Dist: normal
+mu:  0 0 || Sigma: 1 0 0 1 
+
+[1] 0.90 0.95 0.99
+[1] 0.9141047 1.1618834 1.8328882

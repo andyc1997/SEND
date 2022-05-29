@@ -1,0 +1,5 @@
+Sim sample:  50 || MC sample:  10000 || Dist: uniform
+dim 2 || radius: 1 
+
+     90%      95%      99% 
+1.213678 1.421546 1.900041 

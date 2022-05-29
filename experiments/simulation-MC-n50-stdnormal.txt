@@ -1,0 +1,5 @@
+Sim sample:  50 || MC sample:  10000 || Dist: normal
+mu:  0 0 || Sigma: 1 0 0 1 
+
+     90%      95%      99% 
+1.004648 1.314727 2.246568 

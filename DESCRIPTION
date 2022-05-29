@@ -1,0 +1,17 @@
+Package: SEND
+Title: Set estimation and nonparametric detection
+Date: 29.05.2022
+Version: 0.1.0
+Authors@R: 
+    person("Wai Chun", "Cheung", role = c("aut", "cre"), email = "job5wcheung@yahoo.com")
+Description: Implementation of algorithms and reproducing the results in Baíllo, A., Cuevas, A., & Justel, A. (2000).
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.0
+Imports: 
+    uniformly
+Suggests: 
+    MASS,
+    plotrix,
+    svMisc
