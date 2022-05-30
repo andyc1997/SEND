@@ -1,10 +1,11 @@
 # SEND
 
 ### Installation
-
+`SEND` stands for **S**et **E**stimation and **N**onparametric **D**etection. Since this package is written as an exercise / a side project, it is not published on CRAN. Download and unzip the folder and type
+`install.package(path, repos = NULL, type = 'source')` in the R console.
 
 ### Introduction
-This repository contains code to reproduce the results in Baíllo, A., Cuevas, A., & Justel, A. (2000). `SEND` stands for **S**et **E**stimation and **N**onparametric **D**etection. Set estimation theory involves estimating a set $S \subset \mathbb{R}^d$ from a set of randomly sampled data points $X_1,..., X_n \in S$. In this package `SEND`, `X` is the data matrix with each row $X_i$.
+This repository contains code to reproduce the results in Baíllo, A., Cuevas, A., & Justel, A. (2000). Set estimation theory involves estimating a set $S \subset \mathbb{R}^d$ from a set of randomly sampled data points $X_1,..., X_n \in S$. In this package `SEND`, `X` is the data matrix with each row $X_i$.
 
 A simple estimator is provided by $$\hat{S}\_n = \bigcup\_{i=1}^n B(X_i, \epsilon_n)$$ where $B(x, \epsilon)$ is a closed ball centered at $x$ with radius $\epsilon$. In addition, $\epsilon_n \rightarrow 0$ as $n \rightarrow \infty$.
 
