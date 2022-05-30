@@ -1,13 +1,15 @@
+#' Estimate eps from the data
+#'
+#' @param X data matrix contains n observations and p columns.
+#' @return The smallest radius eps such that the dataset is connected in the topological space.
 #' @export
 eps_estim <- function(X){
   # CHECK number of obs > 1
+  if (is.null(dim(X)))
+    stop('X should contain > 1 observation.')
+
   n <- dim(X)[1]
   Rk <- rep(0, n-1)
-
-  if (n <= 1) {
-    print('n must be greater than 1.')
-    return(NULL)
-  }
 
   # SHUFFLE data
   # X1 contains remaining data
@@ -21,7 +23,10 @@ eps_estim <- function(X){
     r <- Inf
     js <- 0
 
+    # vector2matrix
     if (is.null(nrow(X1))) X1 <- matrix(X1, nrow = 1)
+
+    # find min distance
     for (j in 1:nrow(X1)) {
       r.temp <- min(sqrt(rowSums((sweep(X2, MARGIN = 2, X1[j, ]))^2)))
 
@@ -29,47 +34,82 @@ eps_estim <- function(X){
         r <- r.temp
         js <- j
       }
-
     }
 
+    # update param
     Rk[k] <- r
     X2 <- rbind(X2, X1[js, ])
     X1 <- X1[-js,]
   }
 
+  # final estimate
   eps <- max(Rk)/2
   return(list(eps = eps, Rk = Rk))
 }
 
 
+
+#' Estimate Tn
+#'
+#' @param newx a vector for the new observation.
+#' @param X data matrix contains n observations and p columns.
+#' @param eps a positive scalar which defines the neighborhood of each data point.
+#' @return The ratio of Tn to eps
 #' @export
 alarm_estim <- function(newx, X, eps){
-  # Alarm raising
+  # CHECK
+  if (eps <= 0) stop('eps should be positive.')
+  if (is.null(dim(X)))
+    stop('X should contain > 1 observation.')
+
+  # Estimator T_n
   Tn <- min(sqrt(rowSums((sweep(X, MARGIN = 2, newx))^2)))
   Tn <- Tn/eps
   return(Tn)
 }
 
 
+
+#' Perform smoothed boostrap method to estimate the threshold
+#'
+#' @param X data matrix contains n observations and p columns.
+#' @param eps a positive scalar which defines the neighborhood of each data point.
+#' @param N.boot the number of bootstrap samples.
 #' @export
-sm.boot <- function(X, eps, N.boot, N.sim) {
+sm.boot <- function(X, eps, N.boot = 10000) {
+  # CHECK
+  if (eps <= 0) stop('eps should be positive.')
+  if (is.null(dim(X)))
+    stop('X should contain > 1 observation.')
+
   # Smoothed Bootstrap method
+  n <- nrow(X)
   alarm.boot <- rep(0, N.boot)
 
   for (i in 1:N.boot){
     # SAMPLE
-    idx.boot <- sample(N.sim, size = N.sim+1, replace = TRUE)
+    idx.boot <- sample(n, size = n+1, replace = TRUE)
 
     # SMOOTH
-    Z <- uniformly::runif_in_sphere(N.sim+1, d = ncol(X), r = eps)
+    Z <- uniformly::runif_in_sphere(n+1, d = ncol(X), r = eps)
     sample.boot <- X[idx.boot, ] + Z
-    alarm.boot[i] <- alarm_estim(sample.boot[N.sim+1, ], sample.boot[-(N.sim+1), ], eps)
+    alarm.boot[i] <- alarm_estim(sample.boot[n+1, ], sample.boot[-(n+1), ], eps)
   }
 
   return(alarm.boot)
 }
 
 
+
+#' Perform cross-validation smoothing to estimate the threshold
+#'
+#' @param X data matrix contains n observations and p columns.
+#' @param lo the smallest value for eps in the grid.
+#' @param hi the largest value for eps in the grid.
+#' @param len the number of points considered in the grid.
+#' @param alpha a vector of quantiles for eps.
+#' @param eps.data a positive scalar which defines the neighborhood of each data point.
+#' @return the list of chosen thresholds and the empirical probabilities.
 #' @export
 cv.smooth <- function(X, lo, hi, len, alpha, eps.data){
   # Cross-validation Smoothing
